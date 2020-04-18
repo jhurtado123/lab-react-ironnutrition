@@ -11,16 +11,15 @@ import AddFoodForm from "./components/AddFoodForm";
 class App extends Component {
 
   state = {
-    'food': [...Food],
-    'filtered': [...Food],
-    'cart': [],
-    'addFoodModalOpen': false,
+    food : [...Food],
+    searchValue: '',
+    cart: [],
+    addFoodModalOpen: false,
   };
 
   filterBy = (str) => {
-    const {food} = this.state;
     this.setState({
-      'filtered': food.filter(element => element.name.toLowerCase().includes(str.toLowerCase()))
+      'searchValue': str
     });
   };
 
@@ -62,22 +61,23 @@ class App extends Component {
       'food': [...food, newFood]
     }, () => {
       this.toggleModal();
-    })
+    });
   };
 
   render() {
-    const {food, filtered, addFoodModalOpen} = this.state;
+    const {food, searchValue, addFoodModalOpen} = this.state;
+    const filteredFoods = food.filter(element => element.name.toLowerCase().includes(searchValue.toLowerCase()));
     return (
       <div className="App container">
         <h1 className="title">IronNutrition</h1>
         <button className="openModal" onClick={this.toggleModal}>Add food</button>
         <div>
-          <SearchBar onChange={this.filterBy}/>
+          <SearchBar onChange={this.filterBy} value={this.state.searchValue}/>
         </div>
         <div className="columns">
           <div className="column">
             {
-              filtered.map((element, index) => <FoodItem key={index} onChangeQuantity={this.changeQuantity}
+              filteredFoods.map((element, index) => <FoodItem key={index} onChangeQuantity={this.changeQuantity}
                                                          onAdd={this.addToCart} foodData={element}/>)
             }
           </div>
